@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/solarized.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+
+		<script src="../js/canvasInteractor.js"></script>
+    	<script src="../js/g2.core.js"></script>
+    	<script src="../js/g2.lib.js"></script>
+    	<script src="../js/g2.ext.js"></script>
+    	<script src="../js/g2.selector.js"></script>
+    	<script src="../js/g2.mec.js"></script>
+    	<script src="../js/v2.js"></script>
+    	<script src="../src/vehicle.js"></script>
+
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<img src="./img/FH_Dortmund-logo.svg" style="float: right;top:20px; width: 200px;"/>
+				
+				<!-- Titelblatt -->
+				<section>
+					<h1 class="" style="border-bottom: 2pt solid rgb(231,93,35); padding-bottom: 50pt; text-align: left;">Kinematische Betrachtung des Schleppverhaltens von Fahrzeugen mittels vektorieller Mechanismenanalyse</h1>
+					<p class="" style="float: left; font-size: 30px; font-weight: 300;text-align: left;">Demetrius Lorenz*,<br><span style="font-weight: 300;">Stefan Gössner</span></p>
+					<p class="" style="float: left; clear:left; font-size: 20px; font-weight: 300;margin-top: -10px;text-align: left;">Fachbereich Maschinenbau<br>University of Applied Sciences and Arts, Dortmund<br>24. September 2021</p>
+					<aside class="notes">
+						• kurz vorstellen
+						• Schleppverhalten: Was ist damit gemeint?
+					</aside>
+				</section>
+				<!-- Slide 2 -->
+				<section>
+					<p style="float: right; width:500px;text-align: left;">Punkte die sich hinter der gelenkten Vorderachse befinden, durchlaufen während einer Kurvenfahrt eine andere Bahn als die der führenden Achse.</p>
+					<figure class="fragment" data-fragment-index="2" style="float: left; clear: left;">
+					<img src="./img/quelle_ndr.jpg" style="width: 700px;"/>
+					<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 1: Ausschwenken eines Linienbusses (Quelle: Norddeutscher Rundfunk, 2020)</figcaption>
+					</figure>
+					<p class="fragment" data-fragment-index="1" style="float: right; text-align: left; width:500px; clear: right;">Das Fahrzeug läuft zum Teil "aus der Spur" und überschneidet eine größere Fläche als die Spurweite des Fahrzeugs eigentlich suggeriert.</p>
+					<p class="fragment" data-fragment-index="3" style="float: right; text-align: left; width:500px; clear: right;">Die Kenntnis des Schleppverhaltens von Fahrzeugen ist relevant bei der Auslegung von öffentlichen und innerbetrieblichen Transport- und Fahrwegen.</p>
+
+					<aside class="notes">
+						• Beispiele wo es zu Problemen kommen kann...
+					</aside>
+				</section>
+				<!-- Slide 3 -->
+				<section>
+					<figure style="float: left; clear: left;">
+						<img src="./img/modell.png" />
+						<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 2: Dreiradmodell eines Fahrzeugs</figcaption>
+					</figure>
+					<p class="fragment" style="width:500px;float:right;text-align: left;margin-top: 100px;">Fahrzeugmodell als Dreirad mit</p>
+					<p class="fragment" style="width:500px;float:right;clear:right;text-align: left;margin:0">• $\quad\boldsymbol u\quad$Einheitsvektor des Lenkeinschlags</p>
+					<p class="fragment" style="width:500px;float: right; clear:right; text-align: left;margin:0">• $\quad\boldsymbol e\quad$Einheitsvektor der Längsachse</p>
+					<p class="fragment" style="width:500px;float:right;clear:right; text-align: left;margin:0">• $\quad b\quad$ Schlepplänge</p>
+					<p class="fragment" style="width:500px;float:right;clear:right; text-align: left;">Während die Position des Führungspunktes eindeutig geführt wird, ist die Orientierung der Fahrzeugachse und die Lage des geschleppten Punktes B zu ermitteln.</p>
+					<p class="fragment" style="width:500px;float:right;clear:right; text-align: left;font-weight: 700;">Mathematisch gesehen liegt ein Verfolgerproblem vor. Grundsätzlich nichtholonom!</p>
+				</section>
+				<section>
+					<p style="font-weight: 300; font-style: italic;">&bdquo;Ein mechanisches System, das einer nichtholonomen kinematischen Bindung unterliegt, kann dennoch als ganzes
+						holonom sein. [...] Die Verfolgerbedingung ist zwar nichtholonom, sie wird aber durch eine weitere kinematische Bedingung ergänzt [...]. Die Verfolgerbedingung kann dann durch eine holonome Linearkombination
+						der beiden kinematischen Bindungen ersetzt werden. Das Gesamtproblem ist also holonom, obwohl in der ursprünglichen Formulierung eine der beiden kinematischen Bindungen nichtholonom war <span>[1]</span>.&ldquo;
+						<br><span style="font-weight: 400; font-style: bold;float: right;">— Manfred Braun</span>
+					</p>
+					
+				</section>
+				<section>
+					<figure style="float: left; clear: left;width: 500px;margin-top: 110px;">
+						<img src="../../thesis-md/figures/rho300_a250_außen.png"/>
+						<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 3: Zirkuläre Traktrix</figcaption>
+					</figure>
+					<div class="r-vstack fragment fade-out" style="width:550px;float:right;clear:right;margin-top:100px">
+						<p style="text-align: left;">Aus der Integration geht die Schleppkurve oder Traktrix hervor.</p>
+						<p style="text-align: left;">Christian Huygens fand bereits im 17. Jahrhundert durch seine Arbeiten auf dem Gebiet der Kurventheorie die analytische Lösung.</p>
+						<p style="text-align: left;">Walter G. Cady beschreibt in einem Beitrag von 1965 ausführlich die zirkuläre Traktrix [3].</p>
+						<p style="text-align: left;">Während seiner Arbeit am IML in Dortmund formuliert Stefan Gössner die Schleppgleichung aus einem rein kinematischen Ansatz [4].</p>
+						<p style="text-align: left;">Eine Methode, die direkt auf der Traktrix basiert, wird von Giorgio Figliolini (University of Cassino) vorgestellt [5].</p>	
+					</div>
+					<figure style="float: left; clear: left;width: 600px;">
+						<img src="./img/linear.png"/>
+						<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 3: Lineare Traktrix</figcaption>
+					</figure>
+				</section>
+
+				<section data-background-iframe="../bressescheKreise.html" data-background-interactive="true">
+					<p class="fragment" style="width:500px;float:right;text-align: left;margin-bottom:0;">Annahme: Lenkwinkel $\gamma$ bleibt konstant.</p>
+					<p class="fragment" style="width:500px;float: right; clear:right; text-align: left;margin-top: 0;">Das Fahrzeug dreht um seinen statischen Momentanpol P<br><span style="font-size: 20px;">${\boldsymbol r}_{PA} = \boldsymbol r_A - \boldsymbol r_P = - r\,\tilde{\boldsymbol u}$<span style="float:right;">(1)</span></span></p>
+					<p class="fragment" style="width:500px;float: right; clear:right; text-align: left;margin-top: 0;">Geometrische Zusammenhänge<br><span style="font-size: 20px;">$r\,\sin\gamma = b\,,\quad\tan\gamma=\frac{b}{h}\,,\quad r^2 = b^2 + h^2$<span style="float:right">(2)</span><br>mit &nbsp; $\sin\gamma = \boldsymbol{\tilde eu}$ &nbsp; und &nbsp; $\cos\gamma = \boldsymbol{eu}$</span></p>
+					<p class="fragment" style="width:500px;float: right; clear:right; text-align: left;margin-top: 0;">Geschwindigkeitsform von (1)<br><span style="font-size: 20px;">$\boldsymbol v_A = \boldsymbol v_P + \omega\,\boldsymbol{\tilde r}_{PA}$<span style="float:right">(3)</span></p>
+					<p class="fragment r-frame" style="width:500px;float: right; clear:right; text-align: left;margin-top: 0;padding:5px">Winkelgeschwindigkeit<br><span style="font-size: 20px;">$\omega = \frac{v}{b}\,\sin\gamma$<span style="float:right">(4)</span></p>
+
+				</section>
+				<section data-background-iframe="../bressescheKreise.html" data-background-interactive="true">
+					<div class="fragment r-vstack" data-fragment-index="2" style="width:500px;float:right;margin-bottom:0;">
+						<p class="text-align:left">Neuer Ansatz:</p>
+					</div>
+					<p class="fragment fade-out" data-fragment-index="1" style="width:500px;float:right;clear:right;text-align: left;margin-bottom:0;">Eine weitere zeitliche Ableitung lässt keine zufriedenstellende Aussage über die momentane Winkelbeschleunigung
+						$\dot\omega$ des Fahrzeugs zu.</p>
+						
+
+				</section>
+				<section data-background-iframe="../index.html" data-background-interactive="true"></section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+				progress: true,
+				width: 1200,
+				height: 700,
+				margin: 0.04,
+				minScale: 0.2,
+				maxScale: 2.0,
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath ]
+			});
+		</script>
+	</body>
+</html>
