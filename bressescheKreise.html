@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schleppkurven</title>
+    <script src="https://cdn.jsdelivr.net/gh/goessner/canvasInteractor@master/canvasInteractor.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/goessner/g2@master/src/g2.selector.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/goessner/v2@master/v2.js"></script>
+
+</head>
+<body>
+    <main style="width:200px">
+        <canvas id="c" width="1980" height="1000" style="border-width:1px;border-style:solid"></canvas>
+        <ctrl-ing ref="vehicle" header="Steuerung rAA0">
+            {
+                "add":[ 
+                    { "number": {"label":"Krümmungsradius &rho;","min":-2000,"max":2000,"step":10},"path":"rho"},
+                    { "slider": {"label":"Lenkwinkel","min":-89,"max":89,"step":0.5},"path":"_gamma"},
+                    { "toggle": {"label":"Krümmungsradius &rho;", "switchTo": "Infinity"},"path":"rho"},
+                    { "toggle": {"label":"Momentanpol"},"path":"showMPole"},
+                    { "toggle": {"label":"Viergelenk"},"path":"showCrank"},
+                    { "toggle": {"label":"Wendepol"},"path":"showWPole"},
+                    { "toggle": {"label":"Tangentialpol"},"path":"showTPole"}
+                ]
+            }
+            </ctrl-ing>
+    </main>
+
+    
+<script>
+    const ctx = document.getElementById('c').getContext('2d'),
+          interactor = canvasInteractor.create(ctx, {x:600,y:600,cartesian:true, scl:1.5}),
+          selector = g2.selector(interactor.evt);
+
+var vehicle = {
+    A: v2({x:0,y:0,label:{str:'A',loc:'s',off:10}}),
+    _e: v2({x:1,y:0}),
+    _gamma: 45,
+    _alpha: 25,
+    rho: 100,
+    b: 150,
+    showMPole: false,
+    showWPole: false,
+    showTPole: false,
+    showCrank: false,
+
+    get B() { return this.A.add(this.e.neg.scl(this.b)); },
+    get gamma() {return this._gamma * Math.PI/180; },
+    get alpha() {return this._alpha * Math.PI/180; },
+    get u() { return this.e.rot(this.gamma); },
+    get e() { return this._e.rot(this.alpha)},
+    get r() { return this.b/Math.sin(this.gamma); },
+    get h() { return this.b/Math.tan(this.gamma); },
+    get AA0() { return this.u.tilde.scl(this.rho); },
+    get A0() { return this.A.add(this.AA0); },
+    get PA() { return this.u.tilde.neg.scl(this.r)},
+    get PW() { return this.e.scl(this.r/Math.sin(this.gamma) * (1 - this.r/this.rho)) },
+    get PT() { return this.e.tilde.scl(-this.r/Math.cos(this.gamma)); },
+    get P() {return this.A.add(this.PA.neg); },
+    get W() {return this.P.add(this.PW); },
+    get T() { return this.P.add(this.PT); }
+}
+
+const wheel = g2().del().rec({x: -7.5, y: -20,b:15,h:40,fs:'#eeeeee'})
+                        .lin({x1:-5.5,y1:-16,x2:5.5,y2:-16})
+                        .lin({x1:-5.5,y1:-12,x2:5.5,y2:-12})
+                        .lin({x1:-5.5,y1:-4,x2:5.5,y2:-4})
+                        .lin({x1:-5.5,y1:4,x2:5.5,y2:4})
+                        .lin({x1:-5.5,y1:12,x2:5.5,y2:12})
+                        .lin({x1:-5.5,y1:16,x2:5.5,y2:16});
+
+const axis = g2().del().bar2({x1:-50,y1:0,x2:50,y2:0})
+                        //.cir({x:0, y:0,r:5})
+                        .use({grp:wheel,x:50,y:0})
+                        .use({grp:wheel,x:-50,y:0});
+const mPole = g2().del().lin({p1: () => vehicle.A, p2: () => vehicle.A.add(vehicle.u.tilde.scl(vehicle._gamma > 0 ? vehicle.r + 100 : vehicle.r -100)), lw:1.5,ld: [10,5,2,5], label:{str: 'r', loc: 0.25}})
+                        .lin({p1: () => vehicle.B, p2: () => vehicle.B.add(vehicle.e.tilde.scl(vehicle._gamma > 0 ? vehicle.h + 100 : vehicle.h -100)), lw:1.5,ld: [10,5,2,5], label:{str: 'h', loc: 0.35, off: -5}})
+                        .pol({p:() => vehicle.P, label:{str:'P',loc:'e'}})
+                        .avec({p: () => vehicle.P, r: 40, dw:() => Math.PI/2, w: () => vehicle._gamma > 0 ? vehicle.u.neg.w + Math.PI/8 : vehicle.e.neg.w + Math.PI/8, ls:'#00A339',lw:1.5,label:{str: '𝜔',off:-0.5,loc:0.5} })
+                        .vec({p1: () => vehicle.A, p2: () => vehicle.u.tilde.scl(50),ls:'Crimson',lw:2,label:{str: '𝒖\u0303',off:0.5,loc:1} })
+                        .vec({p1: () => vehicle.B, p2: () => vehicle.B.add(vehicle.e.tilde.scl(100)),ls:'Crimson',lw:2,label:{str: '𝒆\u0303',off:0.5,loc:1} })
+                        
+const wPole = g2().del().cir({p: () => vehicle.P.add(vehicle.PW.scl(0.5)), r:() => vehicle.PW.r/2, fs:'rgba(193,66,66,0.25)' })
+                        .pol({p:() => vehicle.W, label:'W'});           
+const tPole = g2().del().pol({p:() => vehicle.T, label:'T'})
+                        .cir({p: () => vehicle.P.add(vehicle.PT.scl(0.5)), r:() => vehicle.PT.r/2, fs:'rgba(10,140,200,0.25)' })
+const fourbar = g2().del().bar( {p1: () => vehicle.A, p2: () => vehicle.A0, ls:'OrangeRed',label:{str: '𝜌',off:-0.5,loc:0.5}})
+                         .bar( {p1: () => vehicle.B, p2: () => vehicle.P, ls:'OrangeRed'})
+                         .arc({p: () => vehicle.A0, dw: Math.PI/2, w: () => vehicle.rho > 0 ? vehicle.u.neg.w + Math.PI/4 : vehicle.u.w + Math.PI/4 , r:() => vehicle.rho,ld: [10,5,2,5] })
+                         .nodfix({p:() => vehicle.A0, label:{str:'A0',loc:'s'}, w: () => vehicle.rho > 0 ? Math.PI : 0})
+                         .nodfix({p:() => vehicle.P, label:{str:'B0',loc:'sw',off:5} , w: -Math.PI/2})
+                         .nod({p:() => vehicle.B,label:{str: 'B',off:10,loc:'w'}})
+                         .nod({p:() => vehicle.A})
+
+const crank = g2().del().bar( {p1: () => vehicle.B, p2: () => vehicle.P, ls:'OrangeRed'})
+                        .lin({p1: () => vehicle.A, p2: () => vehicle.A.add(vehicle.u.scl(150)), lw:1.5,ld: [10,5,2,5]})
+                        .lin({p1: () => vehicle.A, p2: () => vehicle.A.add(vehicle.u.neg.scl(150)), lw:1.5,ld: [10,5,2,5]})
+                        .use({grp: () => g2().nodflt({p:() => vehicle.A0}), w: () => vehicle.u.w})
+                        .nodfix({p:() => vehicle.P, label:{str:'B0',loc:'sw',off:5} , w: -Math.PI/2})
+                        .nod({p:() => vehicle.B})
+                          
+const model = g2().del().lin({p1: () => vehicle.B, p2: () => vehicle.B.add(vehicle.e.scl(250)), lw:1.5,ld: [10,5,2,5]})
+                        .bar2({ x1: () => vehicle.A.x, x2: () => vehicle.B.x, y1: () => vehicle.A.y, y2: () => vehicle.B.y, label:{str: 'b',off:-0.5,loc:0.5}})
+                        .avec({p: () => vehicle.A, r: 40, dw:() => vehicle.gamma, w: () => vehicle.alpha, ls:'RoyalBlue',lw:1.5,label:{str: '𝛾',off:-0.5,loc:0.5} })
+                        .vec({p1: () => vehicle.A, p2: () => vehicle.u.scl(70),ls:'#00A339',lw:2,label:{str: '𝒗 = 𝑣 𝒖',off:0.01,loc:1} })
+                        .vec({p1: () => vehicle.B, p2: () => vehicle.B.add(vehicle.e.scl(50)),ls:'RoyalBlue',lw:2,label:{str: '𝒆',off:0.5,loc:0.5} })
+                        .use({grp:wheel, p: () => vehicle.A, w: () => vehicle.u.tilde.w })
+                        .use({grp:axis, p:() => vehicle.B, w: () => vehicle.e.tilde.w })
+                        .nod({p:() => vehicle.B,label:{str: 'B',off:10,loc:'w'}})
+                        .nod({p:() => vehicle.A,label:{str: 'A',loc:"nw",off:-25}})
+                        .txt({str: 'b' , x: () => vehicle.B.scl(0.5).x, y: () => vehicle.B.scl(0.5).y - 20 })
+const g = g2().clr().view(interactor.view)
+                    .use({ grp: () => vehicle.showMPole ? mPole : g2() } ) 
+                    .use({grp: () => model})
+                    .use({ grp: () => vehicle.showWPole ? wPole : g2() } )
+                    .use({ grp: () => vehicle.showTPole ? tPole : g2() } )
+                    .use({ grp: () => vehicle.showCrank && vehicle.rho !== Infinity ? fourbar : g2() } )
+                    .use({ grp: () => vehicle.showCrank && vehicle.rho == Infinity ? crank : g2() } )
+                    .use({ grp: () => vehicle.showWPole && vehicle.showTPole ? g2().lin({p1: () => vehicle.W, p2: () => vehicle.T, lw:1.5,ld: [10,5,2,5]}) : g2()})
+                    .use({ grp: () => vehicle.showMPole && vehicle.showWPole ? g2().lin({p1: () => vehicle.P, p2: () => vehicle.W, lw:1.5,ld: [10,5,2,5]}) : g2()})
+                    .use({ grp: () => vehicle.showMPole && vehicle.showTPole ? g2().lin({p1: () => vehicle.P, p2: () => vehicle.T, lw:1.5,ld: [10,5,2,5]}) : g2()})
+
+    
+/*     .vec({p1: () => vehicle.A, p2: () => vehicle.u.scl(50),ls:'#00A339',lw:2,label:{str: '𝑣 𝒖',off:-0.5,loc:0.75} })
+    .avec({p: () => vehicle.P, r: 50,dw:Math.PI/3,w:-1.57, ls:'#00A339',lw:1.5,label:{str: 'ω',off:0.5,loc:0.5} })
+ */
+interactor.on('tick', (e) => { g.exe(selector).exe(ctx) } )
+          .on('pointerdown', e => { })
+          .on('pointerup', e => { })
+          .on('pan',  (e) => { interactor.view.x += e.dx; interactor.view.y += e.dy; })
+          .on('drag', e => { // only modify selected geometry here .. do not redraw .. !
+            if (selector.selection && selector.selection.drag) {
+                selector.selection.drag({x:e.xusr,y:e.yusr,dx:e.dxusr,dy:e.dyusr,mode:'drag'});
+                constraining(e);
+            } 
+          })
+          .startTimer();
+
+</script>
+<script src="https://cdn.jsdelivr.net/gh/dmitrijLo/ctrl-ing@1/src/ctrling.min.js"></script>
+</body>
+</html>
