@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planar Vehicle Motion Example</title>
+    <script src="./js/canvasInteractor.js"></script>
+    <script src="./js/g2.core.js"></script>
+    <script src="./js/g2.lib.js"></script>
+    <script src="./js/g2.ext.js"></script>
+    <script src="./js/g2.selector.js"></script>
+    <script src="./js/g2.mec.js"></script>
+    <script src="./js/v2.js"></script>
+    <script src="./js/vehicle.js"></script>
+</head>
+<body>
+    <main style="width:203px">
+        <canvas id="c" width="1980" height="1000" style="border-width:1px;border-style:solid"></canvas>
+        <ctrl-ing ref="world">
+        {
+            "add":[
+                { "toggle": {"label":"Drive"},"path":"_isActive" },
+                { "toggle": {"label":"Karosserie"},"path":"_showBody" },
+                { "toggle": {"label":"Hintergrund"},"path":"_showBackground" },
+                { "toggle": {"label":"Überfahrene Fläche"},"path":"_showHistory" },
+                { "toggle": {"label":"Traktrix"},"path":"_showTractrix" },
+                { "number": {"label":"Anhängerlänge"},"path":"_trailerLength" },
+                { "button": {"label":"Anhänger"},"on":{"click":"createTrailer"}},
+                { "number": {"label":"Radstand"},"path":"vehicle/drawbar", "on":{"change":"update"} },
+                { "number": {"label":"Achsabstand"},"path":"vehicle/_chassi/b" },
+                { "number": {"label":"Faktor &mu;","step":0.01,"min":0.01,"max":1},"path":"vehicle/_mu" },
+                { "button": {"label":"Simulation"},"on":{"click":"simulateStep"}}
+            ]
+        }
+        </ctrl-ing>
+
+        <!-- { "number": {"label":"Fahrzeuglänge"},"path":"linkages/0/drawbar","on":{"change":"notify"}},
+                { "toggle": {"label":"Schleppkurve"},"path":"showTrace"},
+                { "toggle": {"label":"Geradeausfahrt"},"path":"_isActive"},
+                { "number": {"label":"Schlepplänge"},"path":"nextDrawbar"},
+                { "button": {"label":"+ Schleppverband"},"on":{"click":"createLinkage"}} -->
+    </main>
+    <script>
+        const ctx = document.getElementById('c').getContext('2d');
+        globalThis.world = world.create(ctx,{x:250,y:300});
+        //globalThis.model = vehicle.create(ctx,{x:350,y:300,drawbar:150,gamma:90});
+        //model.createLinkage(350)
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/gh/dmitrijLo/ctrl-ing@1/src/ctrling.min.js"></script>
+</body>
+</html>

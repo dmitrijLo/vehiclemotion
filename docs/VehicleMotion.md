@@ -2,10 +2,14 @@
 "lang": "en",
 "title": "Planar Vehicle Motion",
 "subtitle": "Robust and Efficient Vehicle Motion Simulation via Bresse Circles",
-"authors": ["Stefan Gössner<sup>1</sup>"],
+"authors": ["Demetrius Lorenz<sup>1</sup>, Stefan Gössner<sup>1</sup>"],
 "adresses": ["<sup>1</sup>Dortmund University of Applied Sciences. Department of Mechanical Engineering"],
 "date": "July 2021",
-"tags": ["mdmath","static page","publication","Journal","LaTeX","math"]
+"tags": ["Vehicle Motion", "Bresse Circles", "Numerical Method"],
+"layout": "page",
+"permalink": true,
+"math":true,
+"uses": [ { "uri": "navigation.md" } ]
 ---
 
 ### Abstract
@@ -35,7 +39,7 @@ The vehicle can be seen as the coupler of a four-bar mechanism. In the following
 Consider a one-axis trailer moving in the plane, which is drawn by hand, by a car or a truck in point $A$ (figure 1). Its direction of motion relative to the vehicle's longitudinal axis is given by angle $\gamma$ &ndash; think of its steer angle. Its speed, which is the amount of velocity $\bold v$, is considered constant throughout this text.
 
 <figure>
-  <img src="./figures/model.png">
+  <img src="./img/model.png">
   <figcaption>Figure 1: Vehicle Motion</figcaption>
 </figure>
 
@@ -121,7 +125,7 @@ Points on the moving vehicle, which are running through inflection points of the
 Before discussing point $A$ travelling along an arbitrary curve, we start by considering the special cases, where point $A$ is moving on a straight line or on a circle.
 
 <figure>
-  <img src="./figures/model2.png">
+  <img src="./img/model2.png">
   <figcaption>Figure 2: Vehicle Motion travelling along a circular arc.</figcaption>
 </figure>
 
@@ -151,7 +155,7 @@ $${\bold r}_{PW} = \frac{r}{\sin\gamma} \bigg(1 - \frac{r}{\rho}\bigg){\bold e}\
 That useful expression (14) for the inflection pole position seen from the pole is conforming to the fact, that the inflection pole is located on the pole normal [[11]](#11), i.e. lying always on a parallel line to the vehicle's drawbar through the pole. Figure 3 will clarify this.
 
 <figure>
-  <img src="./figures/bresse.png">
+  <img src="./img/bresse.png">
   <figcaption>Figure 3: Bresse Circles of the vehicle model.</figcaption>
 </figure>
 
@@ -248,9 +252,9 @@ $$\bold B_{i+1} = \begin{pmatrix}s_{i+1}\\0\end{pmatrix} -b\,\begin{pmatrix}\cos
 Figure 4 presents the simulated vehicle motion for different step sizes. Comparing both solutions, it can be seen that the deviation from tractrix (red) &nbsp; especially in the first third &nbsp; is large, but quickly converges towards the analytical value.
 
 <figure style="display:flex;flex-wrap:wrap;justify-content:center">
-  <img style="width:33%;" src="./figures/mu1.png">
-  <img style="width:33%;" src="./figures/mu0.5.png">
-  <img style="width:33%;" src="./figures/mu0.25.png">
+  <img style="width:33%;" src="./img/mu1.png">
+  <img style="width:33%;" src="./img/mu0.5.png">
+  <img style="width:33%;" src="./img/mu0.25.png">
   <figcaption>Figure 4: Approximation of different step sizes. From left to right: &mu; = [1, 0.5, 0.25].</figcaption>
 </figure>
 
@@ -261,7 +265,7 @@ A live demonstration can be seen online at ... (repository).
 Figure 5 shows a simplified, overlong and interactively guided vehicle formation made of a truck with semitrailer. Using the introduced approach allows efficient handling of dragged convoys, which basically consist of multiple vehicles - similar to the model in Figure 1. The longitudinal axis orientation $\bold e$ of the truck in front serves as direction vector $\bold u$ for the trailer behind it. Thus, all required variables according to Section 2 are known, which permits the use of relations (7), (19), (20), and (21).
 
 <figure>
-  <img src="figures/example.png">
+  <img style="width:100%;" src="img/example.png">
   <figcaption>Figure 5: Truck with semitrailer passes traffic circle. Background graphic <a href="#13">[13]</a></figcaption>
 </figure>
 

@@ -21,7 +21,15 @@
     	<script src="../js/g2.mec.js"></script>
     	<script src="../js/v2.js"></script>
     	<script src="../src/vehicle.js"></script>
-
+	<style>p {
+		text-align: left;
+		margin: 0;
+		padding: 0;
+		}
+		h2 {
+			text-align: left;
+		}
+		</style>
 	</head>
 	<body>
 		<div class="reveal">
@@ -33,82 +41,340 @@
 					<h1 class="" style="border-bottom: 2pt solid rgb(231,93,35); padding-bottom: 50pt; text-align: left;">Kinematische Betrachtung des Schleppverhaltens von Fahrzeugen mittels vektorieller Mechanismenanalyse</h1>
 					<p class="" style="float: left; font-size: 30px; font-weight: 300;text-align: left;">Demetrius Lorenz*,<br><span style="font-weight: 300;">Stefan Gössner</span></p>
 					<p class="" style="float: left; clear:left; font-size: 20px; font-weight: 300;margin-top: -10px;text-align: left;">Fachbereich Maschinenbau<br>University of Applied Sciences and Arts, Dortmund<br>24. September 2021</p>
+				</section>
+				<!-- Gliederung -->
+				<section>
+					<div class="r-vstack" style="float: left;"></div>
+					<h2>Gliederung</h2>
+					<p>1 &nbsp;Einführung</p>
+					<p>2 &nbsp;Fahrzeugmodell</p>
+					<p>3 &nbsp;Vorgehensweise</p>
+					<p>4 &nbsp;Geometrischer Ansatz</p>
+					<p>5 &nbsp;Kinematischer Ansatz</p>
+					<p>6 &nbsp;Nachweis der Robustheit des Verfahrens</p>
+					<p>7 &nbsp;Anwendungsbeispiel</p>
 					<aside class="notes">
-						• kurz vorstellen
-						• Schleppverhalten: Was ist damit gemeint?
+						1.) Ich möchte Ihnen heute ein numerisches Verfahren vorstellen, dass effizient die Fahrzeugbewegung und insbesondere das einhergehende Schleppverhalten abbildet.<br>
+						2.) Nach einer kurzen Einführung, stelle ich erst ein einfaches Fahrzeugmodell vor — worauf die Theorie basiert.<br>
+						3.) Dann zeige ich die Vorgehensweise, wobei ich zwischen einem geometischen und kinematischen Ansatz unterscheide.<br>
+						4.) Anschließend weise ich die Robustheit des Verfahrens nach.<br>
+						5.) Und wenn die Zeit ausreicht, zeige ich noch ein Anwendungsbeispiel
 					</aside>
 				</section>
-				<!-- Slide 2 -->
+				<!-- Schleppverhalten -->
 				<section>
-					<p style="float: right; width:500px;text-align: left;">Punkte die sich hinter der gelenkten Vorderachse befinden, durchlaufen während einer Kurvenfahrt eine andere Bahn als die der führenden Achse.</p>
-					<figure class="fragment" data-fragment-index="2" style="float: left; clear: left;">
-					<img src="./img/quelle_ndr.jpg" style="width: 700px;"/>
-					<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 1: Ausschwenken eines Linienbusses (Quelle: Norddeutscher Rundfunk, 2020)</figcaption>
-					</figure>
-					<p class="fragment" data-fragment-index="1" style="float: right; text-align: left; width:500px; clear: right;">Das Fahrzeug läuft zum Teil "aus der Spur" und überschneidet eine größere Fläche als die Spurweite des Fahrzeugs eigentlich suggeriert.</p>
-					<p class="fragment" data-fragment-index="3" style="float: right; text-align: left; width:500px; clear: right;">Die Kenntnis des Schleppverhaltens von Fahrzeugen ist relevant bei der Auslegung von öffentlichen und innerbetrieblichen Transport- und Fahrwegen.</p>
-
+					<h2>Das Schleppverhalten</h2>
+					<div class="r-vstack" style="float: left;">
+						<figure class="fragment" data-fragment-index="3">
+							<img src="./img/quelle_ndr.jpg" style="width: 700px;"/>
+							<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 1: Ausschwenken eines Linienbusses (Quelle: Norddeutscher Rundfunk, 2020)</figcaption>
+						</figure>
+					</div>
+					<div class="r-vstack" style="float: right; width: 500px;">
+						<p class="fragment" data-fragment-index="1">Punkte die sich hinter der gelenkten Vorderachse befinden, durchlaufen während einer Kurvenfahrt eine andere Bahn als die der führenden Achse.</p>
+						<p class="fragment" data-fragment-index="2">Das Fahrzeug läuft zum Teil "aus der Spur" und überschneidet eine größere Fläche als die Spurweite des Fahrzeugs eigentlich suggeriert.</p>
+						<p class="fragment" data-fragment-index="4">Die Kenntnis des Schleppverhaltens von Fahrzeugen ist relevant bei der Auslegung von öffentlichen und innerbetrieblichen Transport- und Fahrwegen.</p>	
+					</div>
 					<aside class="notes">
-						• Beispiele wo es zu Problemen kommen kann...
+						1.) Zunächst aber als Einleitung kurz etwas allgemein zum Schleppverhalten von Fahrzeugen. <br>
+						2.) Es ist nun mal so, dass bei einer Kurvenfahrt Punkte, die sich hinter der gelenkten Vorderachse befinden, eine andere Bahn durchlaufen.<br>
+						3.) Insbesondere lange Fahrzeuge oder Verbände geraten sozusagen aus der Spur. <br>
+						4.) Hierzu ein zugeben sehr plakatives Beispiel. Und zwar ein Schulbus, der eine Haltestelle überschneidet und im schlimmsten Fall, würde dieser eine Person erwischen...<br>
+						5.) Das Schleppverhalten von Fahrzeugen besitzt insbesondere bei der Planung und Auslegung von öffentlichen und innerbetrieblichen Transport und Fahrwegen eine hohe Relevanz.
 					</aside>
 				</section>
-				<!-- Slide 3 -->
+				<!-- Theoretische Einordnung -->
 				<section>
-					<figure style="float: left; clear: left;">
-						<img src="./img/modell.png" />
-						<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 2: Dreiradmodell eines Fahrzeugs</figcaption>
-					</figure>
-					<p class="fragment" style="width:500px;float:right;text-align: left;margin-top: 100px;">Fahrzeugmodell als Dreirad mit</p>
-					<p class="fragment" style="width:500px;float:right;clear:right;text-align: left;margin:0">• $\quad\boldsymbol u\quad$Einheitsvektor des Lenkeinschlags</p>
-					<p class="fragment" style="width:500px;float: right; clear:right; text-align: left;margin:0">• $\quad\boldsymbol e\quad$Einheitsvektor der Längsachse</p>
-					<p class="fragment" style="width:500px;float:right;clear:right; text-align: left;margin:0">• $\quad b\quad$ Schlepplänge</p>
-					<p class="fragment" style="width:500px;float:right;clear:right; text-align: left;">Während die Position des Führungspunktes eindeutig geführt wird, ist die Orientierung der Fahrzeugachse und die Lage des geschleppten Punktes B zu ermitteln.</p>
-					<p class="fragment" style="width:500px;float:right;clear:right; text-align: left;font-weight: 700;">Mathematisch gesehen liegt ein Verfolgerproblem vor. Grundsätzlich nichtholonom!</p>
+					<div class="r-vstack" style="float: left;">
+						<figure style="width: 500px;">
+							<img src="./img/linear.png"/>
+							<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 3: Lineare Traktrix</figcaption>
+						</figure>
+						<figure style="width: 500px;">
+							<img src="../../thesis-md/figures/rho300_a250_außen.png"/>
+							<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 4: Zirkuläre Traktrix</figcaption>
+						</figure>
+					</div>
+					<div class="r-vstack" style="float:right;width: 600px;align-items: flex-start;margin-top: 50px;">
+						<h2>Theoretische Einordnung</h2>
+						<!-- <p style="text-align: left;font-size: 20px;">Aus der Integration geht die Schleppkurve oder Traktrix hervor.</p> -->
+						<p class="fragment" style="font-size: 20px;">Christian Huygens fand bereits im 17. Jahrhundert durch seine Arbeiten auf dem Gebiet der Kurventheorie die analytische Lösung der linearen Traktrix.</p>
+						<p class="fragment" style="font-size: 20px;">Walter G. Cady beschreibt in einem Beitrag von 1965 ausführlich die zirkuläre Traktrix [2].</p>
+						<p class="fragment" style="font-size: 20px;">In seiner Dissertation am IML in Dortmund formuliert Stefan Gössner die Schleppgleichung aus einem rein kinematischen Ansatz [3].</p>
+						<p class="fragment" style="font-size: 20px;">Eine Methode, die direkt auf der Traktrix basiert, wird von Giorgio Figliolini (University of Cassino) vorgestellt [4].</p>	
+					</div>
+					<aside class="notes">
+						1.) Das Fahrverhalten von Fahrzeugen während einer langsamen Kurvenfahrt kann näherungsweise als Traktrix angenommen werden. Dabei wird zwischen einer linearen und zirkulären unterschieden.<br>
+						2.) Die analytische Lösung der linearen Traktrix hat Christian Huygens bereits im 17. Jahrhundert gefunden.<br>
+						3.) Walter Cady beschreibt 1965 mit seinem Beitrag nochmal ausführlich die zirkuläre Traktrix<br>
+						4.) Und auch Stefan Gössner, den einige von Ihnen sicherlich gut kennen, beschäftigte sich währen seiner Dissertation unter anderem mit diesem Thema und formulierte eine Schleppgleichung.<br>
+						5.) Eine Methode, die das Schleppverhalten ebenfalls beschreibt und direkt auf der Traktrix basiert, wurde jüngst von Giorgio Figliolini vorgestellt.
+					</aside>
 				</section>
+				<!-- Andenwendungen -->
+				<section>
+					<div class="r-vstack" style="float: left;">
+						<figure style="width: 500px;">
+							<img src="./img/autodesk sweptpath.jpg"/>
+							<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 5: Vehicle Tracking (Quelle: Autodesk)</figcaption>
+						</figure>
+						<figure style="width: 500px;">
+							<img src="./img/AutoTURN.png"/>
+							<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 6: AutoTURN (Quelle: Transoft Solutions)</figcaption>
+						</figure>
+					</div>
+					<div class="r-vstack" style="float:right;width: 600px;align-items: flex-start;margin-top: 50px;">
+						<h2>Anwendungen</h2>
+						<p>Autodesk Vehicle Tracking<br><br>
+							• Schleppkurvenanalyse für Fahrzeuge<br>
+							• Planung von Parkplätzen<br>
+							• Kreisverkehrentwurf<br>
+							• Flughafenplanung
+						</p>
+						<p>AutoTURN von Transoft Solutions<br><br>
+							• Überprüfung der Befahrbarkeit von Straßen und weiterer Verkehrsprojekte.
+						</p>
+					</div>
+					<aside class="notes">
+						1.) Selbstverständlich stehen in der heutigen Zeit auch Computergestützte Lösungen zur Verfügung<br>
+						2.) Der Übersicht halber sind auf dieser Folie zwei unterschiedliche Softwarelösungen aufgelistet, einmal Vehicle Tracking von Autodesk und AutoTURN von Transoft solutions<br>
+						3.) wobei der Anwendungszweck vermutlich ziemlich der Selbe ist. <br>
+						4.) ich muss zugeben, dass ich nicht sagen kann, wie diese Software funktioniert, geschweige denn mir die Lizenzen leisten...<br>
+						5.) Also stelle ich nun eine neue Methode vor, die auf vektorieller Mechanismenanalyse basiert
+					</aside>
+				</section>
+				<!-- Dreiradmodell -->
+				<section>
+					<h2>Das Dreiradmodell</h2>
+					<div class="r-vstack" style="float: left;">
+						<figure style="float: left; clear: left;">
+							<img src="./img/modell.png" />
+							<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 2: Dreiradmodell eines Fahrzeugs</figcaption>
+						</figure>
+					</div>
+					<div class="r-vstack" style="float: right; width: 600px;align-items: flex-start;">
+						<p class="fragment">Annahme einer langsamen Bewegung und einem schlupffreien Abrollen der Räder mit</p>
+						<p class="fragment" style="margin: 0;">• $\quad\boldsymbol u\quad$Einheitsvektor des Lenkeinschlags</p>
+						<p class="fragment" style="margin: 0;">• $\quad\boldsymbol e\quad$Einheitsvektor der Längsachse</p>
+						<p class="fragment" style="margin: 0;">• $\quad b\quad$ Schlepplänge</p>
+						<p class="fragment" >Während die Position des Führungspunktes eindeutig geführt wird, ist die Orientierung der Fahrzeugachse und die Lage des geschleppten Punktes B zu ermitteln.</p>
+						<p class="fragment" style="font-weight: 700;">Mathematisch gesehen liegt ein Verfolgerproblem vor. Grundsätzlich nichtholonom!</p>
+					</div>
+					<aside class="notes">
+						1.) Zur Lösung dieser Bewegungsaufgabe benötigen wir zunächst ein einfaches Modell.<br>
+						2.) In der Literatur ist es üblich ein Zweirad-Modell zu verwenden...<br>
+						3.) ...allerdings kann das hier abgebildete Dreirad-Modell die stets rechtwinklige Ausrichtung der Hinterachse viel besser verdeutlichen.<br>
+						4.) Unter der Annahme einer langsamen Bewegung, dem schlupffreien Abrollen der Räder und einiger bekannten Größen/ oder besser Eingabegrößen...<br>
+						5.) ... ist zwar die Position des Führungspunktes jederzeit eindeutig aber die Ausrichtung des Fahrzeugs und damit die Lage des geschleppten Punktes B — der die Hinterachse repräsentiert — unbekannt... <br>
+					</aside>
+				</section>
+				<!-- Zitat -->
 				<section>
 					<p style="font-weight: 300; font-style: italic;">&bdquo;Ein mechanisches System, das einer nichtholonomen kinematischen Bindung unterliegt, kann dennoch als ganzes
 						holonom sein. [...] Die Verfolgerbedingung ist zwar nichtholonom, sie wird aber durch eine weitere kinematische Bedingung ergänzt [...]. Die Verfolgerbedingung kann dann durch eine holonome Linearkombination
 						der beiden kinematischen Bindungen ersetzt werden. Das Gesamtproblem ist also holonom, obwohl in der ursprünglichen Formulierung eine der beiden kinematischen Bindungen nichtholonom war <span>[1]</span>.&ldquo;
 						<br><span style="font-weight: 400; font-style: bold;float: right;">— Manfred Braun</span>
 					</p>
-					
+					<aside class="notes">
+						1.) Ein mechanisches System, das einer nichtholonomen kinematischen Bindung unterliegt, kann dennoch als ganzes holonom sein. 
+						Und zwar durch eine weitere holonome Bindung — in unserem Fall dem konstanten Abstand der beiden Punkte<br>
+						2.) Damit sollte eine Integration doch möglich sein.
+					</aside>
+				</section>
+				
+				<!-- Vorgehen -->
+				<section data-background-iframe="../bressescheKreise.html" data-background-interactive="true">
+					<div class="r-vstack" style="float:right;width: 500px;align-items: flex-start;margin-top: 50px;">
+						<h2>Vorgehen</h2>
+						<p class="fragment">Annahme: Lenkwinkel $\gamma$ bleibt konstant.</p>
+						<p class="fragment">Das Fahrzeug dreht um seinen statischen Momentanpol P<br><span style="font-size: 20px;">${\boldsymbol r}_{PA} = \boldsymbol r_A - \boldsymbol r_P = - r\,\tilde{\boldsymbol u}$<span style="float:right;">(1)</span></span><br><span style="font-size: 14px;">*Tilde ( ~ ) ist als Orthogonaloperator aufzufassen.</span></p>
+						<p class="fragment" style="width: 500px;">Geometrische Zusammenhänge<br><span style="font-size: 20px;">$r\,\sin\gamma = b\,,\quad\tan\gamma=\frac{b}{h}\,,\quad r^2 = b^2 + h^2$<span style="float:right;">(2)</span><br>mit &nbsp; $\sin\gamma = \boldsymbol{\tilde eu}$ &nbsp; und &nbsp; $\cos\gamma = \boldsymbol{eu}$</span></p>	
+					</div>
+					<aside class="notes">
+						!!!nach Annahme....Momentanpol an!!!
+						1.) Zunächst nehmen wir einen konstanten Lenkwinkel an<br>
+						2.) Dadurch dreht das Modell um seinen statischen Momentanpol<br>
+						3.) Aus dieser Veranschaulichung lassen sich auch einige wichtige Zusammenhänge entnehmen.<br>
+						4.) ...im nächsten Schritt wird diese Gleichung (1) in die Geschwindigkeitsform überführt...
+					</aside>
+				</section>
+				<!-- Geschwindigkeitsform -->
+				<section data-background-iframe="../bressescheKreise.html" data-background-interactive="true">
+					<div class="r-vstack" style="float:right;width: 600px;align-items: flex-start;margin-top: 50px;">
+						<h2>Geschwindigkeitsform</h2>
+						<p class="fragment" style="width:500px;">$\boldsymbol v_A = \boldsymbol v_P + \omega\,\boldsymbol{\tilde r}_{PA}$<span style="float:right">(3)</span></p>
+						<p class="fragment">Annahme: Betrag $v$ der Geschwindigkeit jederzeit konstant.</p>
+						<p class="fragment r-frame" style="width:470px;padding: 20px 20px">Winkelgeschwindigkeit<br><br><span style="margin-left: 150px;">$\omega = \frac{v}{b}\,\sin\gamma$</span><span style="float:right">(4)</span></p>	
+					</div>
+					<aside class="notes">
+						!!!Momentanpol an!!!<br>
+						1.) Unter der Annahme einer konstanten Geschwindigkeit und weil die Geschwindigkeit des Momentanpols ohnehin null ist...<br>
+						2.) ...gelangen wir problemlos an die Winkelgeschwindigkeit des Modells...
+					</aside>
+				</section>
+				<!-- Beschleunigungsform -->
+				<section data-background-iframe="../bressescheKreise.html" data-background-interactive="true">
+					<div class="r-vstack" style="float:right;width: 600px;align-items: flex-start;margin-top: 50px;">
+						<h2>Beschleunigungsform</h2>
+						<p class="fragment" style="width: 500px;">$\boldsymbol a_A = \boldsymbol a_P + \dot\omega\,\boldsymbol{\tilde r}_{PA} - \omega^2\,\boldsymbol r_{PA}$<span style="float:right">(5)</span></p>
+						<p class="fragment" style="width: 500px;">Die Untersuchung der Beschleunigungsform von Gleichung (1) bringt keinen Erkenntnisgewinn bezüglich der momentanen Winkelbeschleunigung $\dot\omega$ des Fahrzeugs.</p>
+						<p class="fragment">Grund: Polbeschleunigung ist unbekannt</p>
+					</div>
+					<aside class="notes">
+						!!!Momentanpol an!!!
+						1.) Leider ist der Erkenntnisgewinn durch die Beschleunigungsform der vorhergehenden Gleichung nicht besonders hoch.<br>
+						2.) Wir kommen an dieser Stelle nicht weiter, weil unter anderem die Polbeschleunigung unbekannt ist<br>
+						3.) Ein anderer Ansatz muss her...
+					</aside>
+				</section>
+				<!-- Neuer Ansatz -->
+				<section data-background-iframe="../bressescheKreise.html" data-background-interactive="true">
+					<div class="r-vstack" data-fragment-index="2" style="width:500px;float:right;margin-bottom:0;">
+						<h3 class="fragment" style="text-align:left;">Neuer Ansatz durch Betrachtung eines Viergelenkmechanismus</h3>
+						<p class="fragment">• Fahrzeuglängsachse ist deckungsgleich mit der Koppel</p>
+						<p class="fragment">• Schwinge verbindet die Hinterachse mit dem Momentanpol</p>
+						<p class="fragment">• Kurbellänge entspricht der Bahnkrümmung &nbsp;$\rho$</p>
+					</div>
+					<aside class="notes">
+						1.) Naja wenn nichts mehr geht, dann muss das vielseits strapazierte Viergelenk herhalten.<br>
+						!!!Einschalten Momentanpol/Viergelenk!!!<br>
+						2.) Dieses wird derart über das Fahrzeugmodell gelegt, sodass die Koppel mit der Längsachse übereinstimmt...<br>
+						3.) ...die Schwinge verbindet den Momentanpol rechtwinklig mit dem Schleppunkt B...<br>
+						4.) ...und vermutlich am wichtigsten, ist die Kurbel, die den Punkt A entlang einer Kreisbahn mit variabler Bahnkrümmung führt<br>
+						5.) Das die Bahnkrümmung variabel ist, kann ich einmal demonstrieren.
+						!!!Stellungen links/rechts/geradeaus vorführen!!!<br>
+						-> sie ist entweder durch eine Bahn analytisch vorgegeben<br>
+						-> oder anhand von 3 Stellungen des Führungspunktes approximiert<br>
+						4) Nochmal zusammengefasst: Durch diesen Ansatz können wir auf die bekannten Gesetzmäßigkeiten des Viergelenks zurückgreifen!<br>
+					</aside>
+				</section>
+				<!-- Geometrischer Ansatz -->
+				<section>
+					<h2>Geometrische Ansatz</h2>
+					<div class="fragment r-vstack" style="float: left;width: 600px;text-align: left;align-items: flex-start;">  
+						<p>Allgemein aus der Literatur [5]</p>
+						<p>Lage des Wendepols W:</p>
+						<p style="font-size: 18px;">$\boldsymbol r_{PW} = \frac{1}{\boldsymbol{\tilde r}_{PA}\boldsymbol r_{PB}}\Bigg(r^2_{PB}\bigg(\frac{r^2_{PB}}{\boldsymbol{\tilde r}_{BB_0}\boldsymbol r_{PB}} + 1\bigg)\boldsymbol{\tilde r}_{PA} - r^2_{PA}\bigg(\frac{r^2_{PA}}{\boldsymbol{\tilde r}_{AA_0}\boldsymbol r_{PA}} + 1\bigg)\boldsymbol{\tilde r}_{PB}\Bigg)$</p>
+						<p>Lage des Tangentialpols T:</p>
+						<p>$\boldsymbol r_{PT} = \frac{r^2_{PA}}{\boldsymbol{\tilde r}_{PW}\boldsymbol r_{PA}}\,\boldsymbol{\tilde r}_{PW}$</p>
+					</div>
+					<div class="fragment r-vstack" style="float: right;width: 500px; text-align: left;">
+						<p>Vereinfachung für das Fahrzeugmodell, weil $B_0$ und $P$ zusammenfallen</p>
+						<p class="r-frame" style="padding: 20px; width: 350px;">$\boldsymbol r_{PW} = \frac{r}{\sin\gamma}\,\bigg(1-\frac{r}{\rho}\bigg)\,\boldsymbol e$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(6)</p>
+						<p class="r-frame" style="padding: 20px; width:300px;">$\boldsymbol r_{PT} = - \frac{r}{\cos\gamma}\,\boldsymbol{\tilde e}$<span style="float: right;">(7)</span></p>
+					</div>
+					<aside class="notes">
+						1.) D.h. Wir können auf die bekannten Gleichungen für die Lage des Wende- und Tangentialpols aus der Literatur zurückgreifen.<br>
+						2.) Wobei sich diese Gleichungen, für das Fahrzeugmodell stark vereinfachen, weil der Momentanpol mit dem Gestellpunkt B0 zusammenfallen.<br>
+					</aside>
+				</section>
+				<!-- Wendekreis -->
+				<section data-background-iframe="../bressescheKreise.html" data-background-interactive="true">
+					<div class="r-vstack" style="float: right;width: 600px;text-align: left;align-items: flex-start;">
+						<h2>Wendekreis</h2>
+						<p class="fragment">• Wendepol &nbsp;$\boldsymbol r_{PW}$ liegt stets parallel zur Längsachse des Fahrzeugs</p>
+						<p class="fragment">• Wenn A0 sich zwischen A und P befindet, dann liegt der Wendekreis hinter der Achse; andernfalls in Fahrrichtung</p>
+						<p class="fragment">• <span style="font-weight: 700;">Sonderfall 1:</span> &nbsp;&nbsp;A0 deckungsgleich mit P<br>—> Wendekreis entartet zu einem Punkt<br>—> Fahrzeug befindet sich auf stationären Kreisfahrt</p>
+						<p class="fragment">• <span style="font-weight: 700;">Sonderfall 2:</span> &nbsp;&nbsp;A0 deckungsgleich mit A<br>—> Wendekreisradius strebt gegen unendlich</p>
+					</div>
+					<aside class="notes">
+						1.) Die Veranschaulichung des Wendekreises am Fahrzeugmodell, bring uns zu einigen Erkenntnissen... 
+						!!!Einschalten!!! Momentanpol/Viergelenk/Wendepol<br>
+						2.) Erste Erkenntnis: Wendepol liegt stets auf einer zur Längsachse parallelen Geraden<br>
+						3.) A0 zwischen P -> Wendekreis liegt hinter der Hinterachse<br>
+						4.) andernfalls befindet sich der Wendekreis in Fahrtrichtung
+						!!!A0 nach weiter links und rechts bewegen!!!
+						5.) 1. Sonderfall. Daraus folgt, dass das Fahrzeug sich auf einer stationären Kreisfahrt befindet
+						6.) 2. Sonderfall
+					</aside>
+				</section>
+				<!-- Bressesche Kreise -->
+				<section data-background-iframe="../bressescheKreise.html" data-background-interactive="true">
+					<div class="r-vstack" style="float: right;width: 600px;text-align: left;align-items: flex-start;">
+						<h2>Bressesche Kreise</h2>
+						<p class="fragment">• Tangentialpol liegt stets auf der Hinterachse und zwar unabhängig von der Bahnkrümmung</p>
+						<p class="fragment">• Lage des Tangentialpols hängt allein vom Lenkwinkel-einschlag ab</p>
+						<p class="fragment">• Strebt der Bahnradius gegen unendlich, dann nähert sich der Beschleunigungspol dem Führungspunkt und der Wendepol dem Schnittpunkt zwischen Wendekreisradius und Bahnkrümmung</p>
+					</div>
+					<aside class="notes">
+						!!!Einschalten!!! Momentanpol/Viergelenk/Wendepol/Tangentialpol<br>
+						1.) Tangentialpol liegt stets auf der Hinterachse...<br>
+						2.) ...und zwar unabhängig von der Bahnkrümmung...<br>
+						3.) ... Die Lage des Tangentialpols ist allein vom Lenkwinkeleinschlag abhängig<br>
+						4.) Wenn wir den Bahnradius gegen gegen unendlich streben lassen, dann nähert sich der Beschleunigungspol langsam dem Führungspunkt...<br>
+						5.) ...bis beide deckungsgleich sind, was zur Folge haben muss, dass der Führungspunkt weder Tangential- noch Normalbeschleunigung besitzt und damit gezwungen ist sich weiter in die eingeschlagene Richtung fortzubewegen...<br>
+						6.) ...interessanter Weise liegt der Wendepol in dem Fall im Schnittpunkt des Wendekreisradius und der Bahnkrümmung...was uns Figlioni ebenfalls nachgewiesen hat...
+					</aside>
+				</section>
+				<!-- Gleichsetzung -->
+				<section>
+					<h2 style="text-align: left;">Synthetisierung</h2>
+				<div class="fragment r-vstack" style="float: left;width: 500px; text-align: left;align-items: flex-start;">
+					<p>Geometrischer Ansatz:</p>
+					<p>$\boldsymbol r_{PW} = \frac{r}{\sin\gamma}\,\bigg(1-\frac{r}{\rho}\bigg)\,\boldsymbol e$</p>
+					<p>$\boldsymbol r_{PT} = - \frac{r}{\cos\gamma}\,\boldsymbol{\tilde e}$</p>
+					<p>Kinematischer Ansatz [5]:</p>
+					<p>$\boldsymbol r_{PW} = \frac{\boldsymbol a_P}{\omega^2}\,;\quad\boldsymbol r_{PT} = \frac{\boldsymbol{\tilde a}_P}{\dot\omega}$</p>
+				</div>
+				<div class="fragment r-vstack" style="float: right;width: 500px;text-align: left;align-items: flex-start;">
+					<p>• Gleichsetzen der Ergebnisse des geometrischen und kinematischen Ansatzes</p>
+					<p>• Elimination der Polbeschleunigung</p>
+					<p class="r-frame" style="padding: 20px;">Winkelbeschleunigung<br><br>$\dot\omega = \frac{v^2}{b^2}\bigg(\frac{r}{\rho} - 1\bigg)\,\sin\gamma\cos\gamma$</p>
+				</div>
+				<aside class="notes">
+					1.) Nun können wir beide Ansätze synthetisieren, indem wir gleichsetzen und die Polbeschleunigung eliminieren...<br>
+				</aside>
 				</section>
 				<section>
-					<figure style="float: left; clear: left;width: 500px;margin-top: 110px;">
-						<img src="../../thesis-md/figures/rho300_a250_außen.png"/>
-						<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 3: Zirkuläre Traktrix</figcaption>
-					</figure>
-					<div class="r-vstack fragment fade-out" style="width:550px;float:right;clear:right;margin-top:100px">
-						<p style="text-align: left;">Aus der Integration geht die Schleppkurve oder Traktrix hervor.</p>
-						<p style="text-align: left;">Christian Huygens fand bereits im 17. Jahrhundert durch seine Arbeiten auf dem Gebiet der Kurventheorie die analytische Lösung.</p>
-						<p style="text-align: left;">Walter G. Cady beschreibt in einem Beitrag von 1965 ausführlich die zirkuläre Traktrix [3].</p>
-						<p style="text-align: left;">Während seiner Arbeit am IML in Dortmund formuliert Stefan Gössner die Schleppgleichung aus einem rein kinematischen Ansatz [4].</p>
-						<p style="text-align: left;">Eine Methode, die direkt auf der Traktrix basiert, wird von Giorgio Figliolini (University of Cassino) vorgestellt [5].</p>	
+					<h3>Jetzt kann integriert werden!</h3>
+					<p>$$\varphi_{i+1} = \varphi_i + \omega_i\Delta t+\frac{1}{2}\,\dot\omega_i\Delta t^2$$</p>
+					<p>$$\boldsymbol r_{B_{i+1}} = \boldsymbol r_{A_{i+1}} - b\begin{pmatrix}\cos\varphi_{i+1}\\\sin\varphi_{i+1}\end{pmatrix}$$</p>
+					<div class="fragment r-vstack r-frame" style="width: 600px;margin-left: 350px;">
+					<p><span style="float: left; font-weight: 700;">Anmerkung:</span><br>Zeitunabhängig durch Einführung einer Schrittweite $\Delta s$</p>
+					<p>$\Delta s = \mu \cdot b$</p>
 					</div>
-					<figure style="float: left; clear: left;width: 600px;">
-						<img src="./img/linear.png"/>
-						<figcaption style="font-size: 12pt; margin-top: -25px;">Abbildung 3: Lineare Traktrix</figcaption>
-					</figure>
 				</section>
-
-				<section data-background-iframe="../bressescheKreise.html" data-background-interactive="true">
-					<p class="fragment" style="width:500px;float:right;text-align: left;margin-bottom:0;">Annahme: Lenkwinkel $\gamma$ bleibt konstant.</p>
-					<p class="fragment" style="width:500px;float: right; clear:right; text-align: left;margin-top: 0;">Das Fahrzeug dreht um seinen statischen Momentanpol P<br><span style="font-size: 20px;">${\boldsymbol r}_{PA} = \boldsymbol r_A - \boldsymbol r_P = - r\,\tilde{\boldsymbol u}$<span style="float:right;">(1)</span></span></p>
-					<p class="fragment" style="width:500px;float: right; clear:right; text-align: left;margin-top: 0;">Geometrische Zusammenhänge<br><span style="font-size: 20px;">$r\,\sin\gamma = b\,,\quad\tan\gamma=\frac{b}{h}\,,\quad r^2 = b^2 + h^2$<span style="float:right">(2)</span><br>mit &nbsp; $\sin\gamma = \boldsymbol{\tilde eu}$ &nbsp; und &nbsp; $\cos\gamma = \boldsymbol{eu}$</span></p>
-					<p class="fragment" style="width:500px;float: right; clear:right; text-align: left;margin-top: 0;">Geschwindigkeitsform von (1)<br><span style="font-size: 20px;">$\boldsymbol v_A = \boldsymbol v_P + \omega\,\boldsymbol{\tilde r}_{PA}$<span style="float:right">(3)</span></p>
-					<p class="fragment r-frame" style="width:500px;float: right; clear:right; text-align: left;margin-top: 0;padding:5px">Winkelgeschwindigkeit<br><span style="font-size: 20px;">$\omega = \frac{v}{b}\,\sin\gamma$<span style="float:right">(4)</span></p>
-
+				<!-- Example -->
+				<section data-background-iframe="../index.html" data-background-interactive="true">
+					<aside class="notes">
+						1.) An dieser Stelle möchte ich visuell zeigen, welchen Fehler wir gegenüber der analytischen Traktrix machen...<br>
+						2.) ...nun wird die Schrittweite halbiert, und sie können eine ordentliche Verbesserung beobachten<br>
+						3.) ...bereits bei dieser Schrittweite ist eine Abweichung visuell nicht mehr zu erkennen<br>
+						4.) Das spricht für die Robustheit des Verfahrens...
+					</aside>
 				</section>
-				<section data-background-iframe="../bressescheKreise.html" data-background-interactive="true">
-					<div class="fragment r-vstack" data-fragment-index="2" style="width:500px;float:right;margin-bottom:0;">
-						<p class="text-align:left">Neuer Ansatz:</p>
+				<!-- Zusammenfassung -->
+				<section>
+					<div class="r-vstack" style="width: 800px; align-items: flex-start; text-align: left;">
+					<h2>Zusammenfassung</h2>
+					<p>Es wurde ...</p>
+					<p>• ein numerisches Verfahren unter Berücksichtigung von Geschwindigkeits- und Beschleunigungsverhältnissen vorgestellt.</p>
+					<p>• eine Analogie von einem Fahrzeugmodell und einem Viergelenkmechanismus hergestellt.</p>
+					<p>• die aktuelle Winkelbeschleunigung mittels Bressescher Kreise bestimmt. </p>
+					<p>• ein robustes Verfahren zur Beschreibung der Fahrzeugbewegung mit guten Ergebnissen schon bei Schrittweiten von einem Viertel der Fahrzeuglänge präsentiert.</p>
+				</div>
+				</section>
+				<section>
+					<h2 style="border-bottom: 2pt solid rgb(231,93,35);margin-top: 0px;padding-bottom: 50pt ;">Vielen Dank für Ihre Aufmerksamkeit</h2><br>
+				</section>
+				
+				<section>
+					<div class="r-vstack" style="align-items: flex-start; text-align: left;">
+						<h2>Referenzen</h2>
+					<span>[1] &nbsp; M. Braun, „Nichtholonome Bindungen und Systeme“, PAMM — Proceedings in
+						Applied Mathematics and Mechanics, 2003 [Online]. Verfügbar unter: 10.1002.</span>
+					<span>[2] &nbsp; W. G. Cady, „The Circular Tractrix“, The American Mathematical Monthly, Vol. 72, No. 10,
+						pp. 1065 - 1071, 1965.</span>
+					<span>[3] &nbsp; S. Gössner, Ein kinematisches Modell zur Analyse materialflußtechnischer Bewegungsabläufe.
+						Dortmund: Verlag Praxiswissen, 1992, isbn: 3-929443-01-5.</span>
+					<span>[4] &nbsp; G. Figliolini, Ch. Lanni, „Kinematic Analysis of the Planar Motion of Vehicles
+						when Traveling Along Tractrix Curves“, ASME 2015 International Design Engineering
+						Technical Conferences and Computers and Information in Engineering
+						Conference.</span>
+					<span>[5] &nbsp; S. Gössner, Mechanismentechnik — Vektorielle Analyse ebener Mechanismen. Berlin: Logos Verlag, 2017, isbn: 978-3-8325-4362-4.</span>
 					</div>
-					<p class="fragment fade-out" data-fragment-index="1" style="width:500px;float:right;clear:right;text-align: left;margin-bottom:0;">Eine weitere zeitliche Ableitung lässt keine zufriedenstellende Aussage über die momentane Winkelbeschleunigung
-						$\dot\omega$ des Fahrzeugs zu.</p>
-						
-
+					
 				</section>
-				<section data-background-iframe="../index.html" data-background-interactive="true"></section>
 			</div>
 		</div>
 
