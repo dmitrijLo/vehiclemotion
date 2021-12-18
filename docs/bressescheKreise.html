@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bresse Circles</title>
+    <title>Schleppkurven</title>
     <script src="https://cdn.jsdelivr.net/gh/goessner/canvasInteractor@master/canvasInteractor.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/goessner/g2@master/src/g2.selector.js"></script>
@@ -11,25 +11,33 @@
 
 </head>
 <body>
-    <main style="width:200px">
-        <canvas id="c" width="1980" height="1000" style="border-width:1px;border-style:solid"></canvas>
-        <ctrl-ing ref="vehicle" header="Steuerung rAA0">
-            {
-                "add":[ 
-                    { "number": {"label":"Krümmungsradius &rho;","min":-2000,"max":2000,"step":10},"path":"rho"},
-                    { "slider": {"label":"Lenkwinkel","min":-89,"max":89,"step":0.5},"path":"_gamma"},
-                    { "toggle": {"label":"Krümmungsradius &rho;", "switchTo": "Infinity"},"path":"rho"},
-                    { "toggle": {"label":"Momentanpol"},"path":"showMPole"},
-                    { "toggle": {"label":"Viergelenk"},"path":"showCrank"},
-                    { "toggle": {"label":"Wendepol"},"path":"showWPole"},
-                    { "toggle": {"label":"Tangentialpol"},"path":"showTPole"}
-                ]
-            }
+    <main>
+        <div id="info" style="margin: 2em 0 0 2em ;display:flex;width:1000px;position: absolute;">
+            <ctrl-ing ref="vehicle">
+                {
+                    "add":[ 
+                        { "toggle": {"label":"Momentanpol"},"path":"showMPole"},
+                        { "toggle": {"label":"Viergelenk"},"path":"showCrank"},
+                        { "toggle": {"label":"Wendepol"},"path":"showWPole"},
+                        { "toggle": {"label":"Tangentialpol"},"path":"showTPole"},
+                        { "slider": {"label":"Lenkwinkel","min":-89,"max":89,"step":0.5},"path":"_gamma"},
+                        { "number": {"label":"Krümmungsradius &rho;","min":-2000,"max":2000,"step":10},"path":"rho"},
+                        { "toggle": {"label":"Krümmungsradius &rho; &rarr; &infin; ", "switchTo": "Infinity"},"path":"rho"}
+                    ]
+                }
             </ctrl-ing>
+            <aside style="margin-left: 2em;">
+                <h1>Anwendung der Bresseschen Kreise auf ein Fahrzeugmodel</h1>
+            <p><b>Erläuterung:</b><br><em style="font-weight: 200;">Aktiviere nacheinander die Schalter um den Momentanpol, Wendepol,Tangentialpol und das zugrundeliegende Viergelenkgetriebe einzublenden. Anschließend lassen sich der Lenkwinkel und Krümmungsradius des Models variieren. Der letzte Schalter setzt den Krümmungsradius des Viergelenks auf "unendlich".</em></p>
+            </aside>
+        </div>
+        <canvas id="c" width="1980" height="1000" style="border-width:1px;border-style:solid"></canvas>
+        
     </main>
 
     
 <script>
+
     const ctx = document.getElementById('c').getContext('2d'),
           interactor = canvasInteractor.create(ctx, {x:600,y:600,cartesian:true, scl:1.5}),
           selector = g2.selector(interactor.evt);
@@ -58,9 +66,12 @@ var vehicle = {
     get PA() { return this.u.tilde.neg.scl(this.r)},
     get PW() { return this.e.scl(this.r/Math.sin(this.gamma) * (1 - this.r/this.rho)) },
     get PT() { return this.e.tilde.scl(-this.r/Math.cos(this.gamma)); },
+    get PQ() { return this.WT.tilde.scl(this.WT.perp(this.PW)/this.WT.r**2) },
     get P() {return this.A.add(this.PA.neg); },
     get W() {return this.P.add(this.PW); },
-    get T() { return this.P.add(this.PT); }
+    get T() { return this.P.add(this.PT); },
+    get Q() { return this.P.add(this.PQ)},
+    get WT() { return this.T.add(this.W.neg)}
 }
 
 const wheel = g2().del().rec({x: -7.5, y: -20,b:15,h:40,fs:'#eeeeee'})
@@ -118,7 +129,7 @@ const g = g2().clr().view(interactor.view)
                     .use({ grp: () => vehicle.showTPole ? tPole : g2() } )
                     .use({ grp: () => vehicle.showCrank && vehicle.rho !== Infinity ? fourbar : g2() } )
                     .use({ grp: () => vehicle.showCrank && vehicle.rho == Infinity ? crank : g2() } )
-                    .use({ grp: () => vehicle.showWPole && vehicle.showTPole ? g2().lin({p1: () => vehicle.W, p2: () => vehicle.T, lw:1.5,ld: [10,5,2,5]}) : g2()})
+                    .use({ grp: () => vehicle.showWPole && vehicle.showTPole ? g2().lin({p1: () => vehicle.W, p2: () => vehicle.T, lw:1.5,ld: [10,5,2,5]}).pol({p:() => vehicle.Q, label:{str:'Q',loc:'s',off:5} }) : g2()})
                     .use({ grp: () => vehicle.showMPole && vehicle.showWPole ? g2().lin({p1: () => vehicle.P, p2: () => vehicle.W, lw:1.5,ld: [10,5,2,5]}) : g2()})
                     .use({ grp: () => vehicle.showMPole && vehicle.showTPole ? g2().lin({p1: () => vehicle.P, p2: () => vehicle.T, lw:1.5,ld: [10,5,2,5]}) : g2()})
 
