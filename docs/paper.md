@@ -12,6 +12,22 @@
 "uses": [ { "uri": "navigation.md" } ]
 ---
 
+  ## Content
+
+- [Abstract](#abstract)
+- [1. Introduction](#1-introduction)
+- [2. Geometry](#2-geometry)
+- [3. Velocities](#3-velocities)
+- [4. Accelerations](#4-accelerations)
+- [5. Bresse Circles](#5-bresse-circles)
+  - [5.1 Geometric Approach](#51-geometric-approach)
+  - [5.2 Kinematic Approach](#52-kinematic-approach)
+- [6. Time Integration](#6-time-integration)
+- [7. Error Analysis](#7-error-analysis)
+- [8. Examples](#8-examples)
+- [9. Conclusion](#9-conclusion)
+- [References](#references)
+
 ### Abstract
 
 This paper investigates the dragging behavior of vehicles using planar rigid-body kinematics. In this context, a kinematic analysis of the single-track model of a vehicle results in a numerical method based on the motion study of a planar four-bar mechanism.  
