@@ -60,17 +60,18 @@ const vehicle = {
     prototype: {
         constructor(guidingPoint,drawbar,u){
             this._g = g2();
-            console.log(typeof guidingPoint)
             this._A = typeof guidingPoint == 'function' ? () => guidingPoint() : guidingPoint; // reference to previous point
-            this._B = this.A.add(v2.yunit.scl(drawbar));
+            this._B = this.A.add(v2.yunit.scl(drawbar));            
+            this._koppel = 0;
+            this._C = this.B.add(this.e.neg.scl(this.koppel));
             this._drawbar = drawbar;
             this._u = u;
             this._phi = this.e.w;
             this.handle = this.A.add(this.e.rot(this.gamma).scl(50));
             this._cacheA = [this.A.cpy,this.A.cpy,this.A.cpy];
 
-            this._chassi = { b: 178.5, l: 427, img: "./img/honda.png" }
-            this._wheel = { b: 20.5, h: 40.64 }
+            this._chassi = { b: 178.5/4, l: this.drawbar/* 427 */, img: "./img/honda.png" }
+            this._wheel = { b: 20.5/4, h: 40.64/4 }
             this.dir = 1;
             this._ds = 0;
             this._dt = 1;
@@ -88,17 +89,20 @@ const vehicle = {
         get A() {return typeof this._A == 'function' ? this._A() : this._A},
         set A(o) {this._A.x = o.x; this._A.y = o.y},
         get B() { return this._B },
-        set B(o) { this._B.x = o.x, this._B.y = o.y },
+        set B(o) { this._B.x = o.x; this._B.y = o.y },
         get BA() { return this.A.add(this.B.neg); },
-        get C() {return this.B.add(this.e.neg.scl(50));},
+        get C() { return this._C },
+        set C(o) { this._C.x = o.x; this._C.y = o.y },
         // Richtungsvektoren
         get e() { return this.BA.unit },
-        get u() { return this._u()},
-        set u(fn) { this._u = fn;},
+        get u() { return this._u()},
+        set u(fn) { this._u = fn;},
 
         // Geometrie
         get drawbar() { return this._drawbar; },
         set drawbar(int) { this._drawbar = int; },
+        get koppel() { return this._koppel },
+        set koppel(int) { return this._koppel = int },
         get h() { return this.drawbar/Math.tan(this.gamma); },
         get r() { return this.drawbar/Math.sin(this.gamma); },
         get rho() { return this.getCurvature(); },
@@ -153,10 +157,13 @@ const vehicle = {
             
             this.cacheA = this.A.cpy;
             if(this.cacheA.length > 3) this.cacheA.shift();
+            
+            
+            
             this.incrementPhi(dt);
+            this.C = this.B.add(this.e.neg.scl(this.koppel));
             const ephi = v2({x: Math.cos(this._phi), y: Math.sin(this._phi) });
             this.B = this.A.add(ephi.neg.scl(this.drawbar))
-            
             //if(this.traceB.length > 500) this.traceB.shift();
             if(this._tick > 1/30) {
                 this._tick = 0;
@@ -220,13 +227,13 @@ const world = {
             this._g = g2().clr().view(this._interactor.view).grid({color: "grey", size: 20});
             
 
-            this.vehicle = vehicle.create(v2({x:0,y:0}),250, () => v2({x:1,y:0}) );
+            this.vehicle = vehicle.create(v2({x:0,y:0}),50, () => v2({x:1,y:0}) );
             this._trailers = [this.vehicle];
             this._nodes = [this.vehicle.A, this.vehicle.B];
             this._history = [];
             this._vehicleHistory = g2().view(this._interactor.view)
             
-            this._trailerLength = 150;
+            this._trailerLength = 50;
             this._scale = 1;
             this._tick = 0;
             this._bezierController = [this.vehicle.A.cpy];
@@ -242,8 +249,8 @@ const world = {
         },
 
         get scale(){return this._scale;},
-        get A() {return this._A},
-        set A(o) {this._A.x = o.x; this._A.y = o.y},
+        //get A() {return this._A},
+        //set A(o) {this._A.x = o.x; this._A.y = o.y},
         get u() { return this._u; },
         set u(o) {this._u.x = o.x; this._u.y = o.y},
         get trailers() { return this._trailers; },
@@ -277,15 +284,15 @@ const world = {
                     }})
                     .use({grp: () => {
                         let g = g2();
-                        for(let node of this.nodes) g.nod({p: () => node, fs:'red'});
+                        for(let node of this.nodes) g.nod({p: () => node/* , fs:'red' */});
                         return g;
                     }})
                     .vec({p1: () => this.vehicle.A, p2: () => this.vehicle.handle, lw: 2.5 })
                     
                     //.img({uri:truck, x: () => this.A.x, y: () => this.A.y, scl:0.4, xoff: -145,yoff:-50, w: () => this.linkages[0].e.tilde.w})
-                    
-                    .hdl( {p: () => this.vehicle.handle, label:'Z', r: () => this._interactor.view.scl < 0.5 ? 15 : 5})
-                    .wheel({p: () => this.vehicle.A, b: 20.5,h: 40.64, w: () => this.vehicle.e.w + this.vehicle.gamma});
+                    .hdl({ p: () => this.vehicle.C, label:'C' })
+                    .hdl({ p: () => this.vehicle.handle, label:'Z', r: () => this._interactor.view.scl < 0.5 ? 15 : 5 })
+                    .wheel({p: () => this.vehicle.A, b: 20.5/4,h: 40.64/4, w: () => this.vehicle.e.w + this.vehicle.gamma});
                     
                   
             this._interactor.on('tick', e => { this.ontick(e); })
@@ -307,9 +314,9 @@ const world = {
         },
         createTrailer(){
             const previous = this.trailers[this.trailers.length - 1];
-            const next = vehicle.create(previous.B, this._trailerLength, () => previous.e);
-
+            const next = vehicle.create(previous.C, this._trailerLength, () => previous.e);
             previous._hasTrailer = true;
+            this.nodes = previous.C
             this.nodes = next.B;
             this.trailers = next;
         },
@@ -369,6 +376,7 @@ const world = {
                 const dsTick = this.vehicle._ds > 0 ? 
                                this.vehicle._ds > step ? step : this.vehicle._ds : 
                                this.vehicle._ds < -step ? -step : this.vehicle._ds;
+                //this.vehicle.incrementPhi(e.dt);
                 this.vehicle.A.iadd(this.vehicle.u.scl(dsTick));
                 const dir = Math.sign(dsTick)
                 this.notify(e.dt, dir)
@@ -407,7 +415,12 @@ const world = {
             trailer.dir = dir;
             trailer.update(dt);
         }},
-        update(){this.vehicle.update()}
+        update(){this.vehicle.update()},
+        use(g){
+            const commands = this._g.commands.slice(0,3); 
+                commands.push( g2().use({grp: g}).commands[0] );
+            this._g.commands = commands.concat( this._g.commands.slice(3) );
+        }
     }
 }
 

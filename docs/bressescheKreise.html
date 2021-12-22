@@ -21,14 +21,14 @@
                         { "toggle": {"label":"Wendepol"},"path":"showWPole"},
                         { "toggle": {"label":"Tangentialpol"},"path":"showTPole"},
                         { "slider": {"label":"Lenkwinkel","min":-89,"max":89,"step":0.5},"path":"_gamma"},
-                        { "number": {"label":"Krümmungsradius &rho;","min":-2000,"max":2000,"step":10},"path":"rho"},
+                        { "slider": {"label":"Krümmungsradius &rho;","min":-200,"max":200,"step":1},"path":"rho"},
                         { "toggle": {"label":"Krümmungsradius &rho; &rarr; &infin; ", "switchTo": "Infinity"},"path":"rho"}
                     ]
                 }
             </ctrl-ing>
             <aside style="margin-left: 2em;">
                 <h1>Anwendung der Bresseschen Kreise auf ein Fahrzeugmodel</h1>
-            <p><b>Erläuterung:</b><br><em style="font-weight: 200;">Aktiviere nacheinander die Schalter um den Momentanpol, Wendepol,Tangentialpol und das zugrundeliegende Viergelenkgetriebe einzublenden. Anschließend lassen sich der Lenkwinkel und Krümmungsradius des Models variieren. Der letzte Schalter setzt den Krümmungsradius des Viergelenks auf "unendlich".</em></p>
+            <p><b>Erläuterung:</b><br><em style="font-weight: 200;">Aktiviere nacheinander die Schalter um den Momentanpol, Wendepol, Tangentialpol und das zugrundeliegende Viergelenkgetriebe einzublenden. Anschließend lassen sich der Lenkwinkel und Krümmungsradius des Modells variieren. Der letzte Schalter setzt den Krümmungsradius des Viergelenks auf "unendlich".</em></p>
             </aside>
         </div>
         <canvas id="c" width="1980" height="1000" style="border-width:1px;border-style:solid"></canvas>
@@ -99,7 +99,6 @@ const tPole = g2().del().pol({p:() => vehicle.T, label:'T'})
                         .cir({p: () => vehicle.P.add(vehicle.PT.scl(0.5)), r:() => vehicle.PT.r/2, fs:'rgba(10,140,200,0.25)' })
 const fourbar = g2().del().bar( {p1: () => vehicle.A, p2: () => vehicle.A0, ls:'OrangeRed',label:{str: '𝜌',off:-0.5,loc:0.5}})
                          .bar( {p1: () => vehicle.B, p2: () => vehicle.P, ls:'OrangeRed'})
-                         .arc({p: () => vehicle.A0, dw: Math.PI/2, w: () => vehicle.rho > 0 ? vehicle.u.neg.w + Math.PI/4 : vehicle.u.w + Math.PI/4 , r:() => vehicle.rho,ld: [10,5,2,5] })
                          .nodfix({p:() => vehicle.A0, label:{str:'A0',loc:'s'}, w: () => vehicle.rho > 0 ? Math.PI : 0})
                          .nodfix({p:() => vehicle.P, label:{str:'B0',loc:'sw',off:5} , w: -Math.PI/2})
                          .nod({p:() => vehicle.B,label:{str: 'B',off:10,loc:'w'}})
@@ -119,6 +118,7 @@ const model = g2().del().lin({p1: () => vehicle.B, p2: () => vehicle.B.add(vehic
                         .vec({p1: () => vehicle.B, p2: () => vehicle.B.add(vehicle.e.scl(50)),ls:'RoyalBlue',lw:2,label:{str: '𝒆',off:0.5,loc:0.5} })
                         .use({grp:wheel, p: () => vehicle.A, w: () => vehicle.u.tilde.w })
                         .use({grp:axis, p:() => vehicle.B, w: () => vehicle.e.tilde.w })
+                        .arc({p: () => vehicle.A0, dw: Math.PI/2, w: () => vehicle.rho > 0 ? vehicle.u.neg.w + Math.PI/4 : vehicle.u.w + Math.PI/4 , r:() => vehicle.rho,ld: [10,5,2,5] })
                         .nod({p:() => vehicle.B,label:{str: 'B',off:10,loc:'w'}})
                         .nod({p:() => vehicle.A,label:{str: 'A',loc:"nw",off:-25}})
                         .txt({str: 'b' , x: () => vehicle.B.scl(0.5).x, y: () => vehicle.B.scl(0.5).y - 20 })
