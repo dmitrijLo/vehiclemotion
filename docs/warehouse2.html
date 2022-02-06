@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planar Vehicle Motion Example</title>
+    <script src="./js/canvasInteractor.js"></script>
+    <script src="./js/g2.core.js"></script>
+    <script src="./js/g2.lib.js"></script>
+    <script src="./js/g2.ext.js"></script>
+    <script src="./js/g2.selector.js"></script>
+    <script src="./js/g2.mec.js"></script>
+    <script src="./js/v2.js"></script>
+    <script src="./js/vehicle.js"></script>
+</head>
+<body>
+    <main style="width:203px">
+        <canvas id="c" width="1980" height="1000" style="border-width:1px;border-style:solid"></canvas>
+        <ctrl-ing ref="world">
+        {
+            "add":[
+                { "toggle": {"label":"Überfahrene Fläche"},"path":"_showHistory" },
+                { "toggle": {"label":"Traktrix"},"path":"_showTractrix" },
+                { "number": {"label":"Anhängerlänge"},"path":"_trailerLength" },
+                { "button": {"label":"Anhänger"},"on":{"click":"createTrailer"}},
+                { "number": {"label":"Radstand"},"path":"vehicle/drawbar", "on":{"change":"update"} },
+                { "number": {"label":"Achsabstand"},"path":"vehicle/_chassi/b" },
+                { "number": {"label":"Faktor &mu;","step":0.01,"min":0.01,"max":1},"path":"vehicle/_mu" },
+                { "button": {"label":"Simulation"},"on":{"click":"simulateStep"}}
+            ]
+        }
+        </ctrl-ing>
+
+        <!-- { "toggle": {"label":"Karosserie"},"path":"_showBody" }, 
+            { "toggle": {"label":"Hintergrund"},"path":"_showBackground" },
+        -->
+    </main>
+    <script>
+        const ctx = document.getElementById('c').getContext('2d');
+        
+        g2.prototype.rack = function(args) { return this.addCommand({c:'rack', a:args}); }
+        g2.prototype.rack.prototype = g2.mix(g2.prototype.rec.prototype, {
+            g2() {
+                const {x,y,b=80,h=120,w,ls='transparent', fs='rgb(16,76,113)'} = this;
+                return g2().use({
+                    grp: g2().rec({h: 60 , b: 120, fs: "rgb(16,76,113)" })
+                          .rec({h: 5, b: 100, x: 10, y: 0, ls:"white", fs:"white"})
+                          .rec({h: 40, b: 5, x: 115, y: 10,ls:"white", fs:"white"})
+                          .rec({h: 5, b: 100, x: 10, y: 55,ls:"white", fs:"white"})
+                          .rec({h: 40, b: 5, x: 0, y: 10,ls:"white", fs:"white"})
+                          .rec({h: 50, b: 110, x: 5, y: 5, fs:"grey"})
+                          .rec({h: 40, b: 40, x: 17.5, y: 10, sh: [5,0,5], fs:"rgb(231,188,132)"})
+                          .rec({h: 40, b: 40, x: 62.5, y: 10, sh: [5,0,5], fs:"rgb(231,188,132)"})
+                          .rec({h: 7.5, b: 38, x: 18.5, y: 25,ls:"rgb(237,205,143)", fs:"rgb(237,205,143)"})
+                          .rec({h: 7.5, b: 38, x: 63.5, y: 25,ls:"rgb(237,205,143)", fs:"rgb(237,205,143)"}),
+                          x,y,w })
+            }
+        });
+
+        var warehouse = g2().rack({x:150,y:100}).rack({x:265,y:100}).rack({x:380,y:100}).rack({x:495,y:100})
+                        .rack({x:150,y:250}).rack({x:265,y:250}).rack({x:380,y:250}).rack({x:495,y:250})
+                        .rack({x:150,y:400}).rack({x:265,y:400}).rack({x:380,y:400}).rack({x:495,y:400})
+                        .rack({x:150,y:550}).rack({x:265,y:550}).rack({x:380,y:550}).rack({x:495,y:550})
+                        .rack({x:800,y:120,w: Math.PI/2}).rack({x:800,y:235,w: Math.PI/2}).rack({x:800,y:350,w: Math.PI/2}).rack({x:800,y:465,w: Math.PI/2});
+
+        
+        globalThis.world = world.create(ctx,{x:250,y:300});
+        globalThis.world.use(warehouse);
+ 
+
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/gh/dmitrijLo/ctrl-ing@1/src/ctrling.min.js"></script>
+</body>
+</html>

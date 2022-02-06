@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
 <meta name="description" content="Planar Vehicle Motion - microjam page">
 <meta name="author" content="Demetrius Lorenz<sup>1</sup>, Stefan Gössner<sup>1</sup>">
-<meta name="date" content="Thu Jul 01 2021 00:00:00 GMT+0200 (Mitteleuropäische Sommerzeit)">
+<meta name="date" content="Thu Jul 01 2021 00:00:00 GMT+0200 (Central European Summer Time)">
 <meta name="keywords" content="Vehicle Motion,Bresse Circles,Numerical Method">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js/styles/vs.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
@@ -45,9 +45,7 @@
 <li><a href="#references">References</a></li>
 </ul>
 <h3 id="abstract">Abstract</h3>
-<p>This paper investigates the dragging behavior of vehicles using planar rigid-body kinematics. In this context, a kinematic analysis of the single-track model of a vehicle results in a numerical method based on the motion study of a planar four-bar mechanism.<br>
-The driving behavior reproduces the slip-free (slow) motion with a steered front-wheel and a fixed rear-wheel. The generated trajectories are compared to the analytical tractrix in terms of an error analysis.<br>
-The results are used to develop an interactive web application, which allows to interactively guide vehicles or vehicle groups of different dimensions along an arbitrary track, for example to dimension the necessary driving paths.</p>
+<p>This paper investigates the dragging behavior of vehicles using planar rigid-body kinematics. In this context, a kinematic analysis of the single-track model of a vehicle results in a numerical method based on the motion study of a planar four-bar mechanism. The driving behavior reproduces the slip-free (slow) motion with a steered front-wheel and a fixed rear-wheel. The generated trajectories are compared to the analytical tractrix in terms of an error analysis. The results are used to develop an interactive web application, which allows to interactively guide vehicles or vehicle groups of different dimensions along an arbitrary track, for example to dimension the necessary driving paths.</p>
 <h2 id="1-introduction">1. Introduction</h2>
 <p>In general, aspects of vehicle dynamics have to be considered in the trajectory planning of wheeled vehicles <a href="#1">[1]</a> <a href="#2">[2]</a>. However, in the design of public and internal transport routes these dynamic influences are of minor importance and are usually not taken into account. In such cases it is sufficient to discuss the motion from a purely kinematic point of view – like so in this paper.</p>
 <p>Furthermore, it is common and suitable to restrict a kinematic study of motion in the plane using a two-wheel model and a slip-free rolling of the wheels <a href="#3">[3]</a> <a href="#4">[4]</a>. This makes a fixed point of the vehicle model explicit guided, either by an analytically given path or drawn by a towing vehicle ahead. Apart from the known position, the determination of the unknown orientation of the vehicle axis remains.</p>

@@ -17,8 +17,9 @@
 - [Abstract](#abstract)
 - [1. Introduction](#1-introduction)
 - [2. Geometry](#2-geometry)
-- [3. Velocities](#3-velocities)
-- [4. Accelerations](#4-accelerations)
+- [3. Kinematics](#3-kinematics)
+  - [3.1 Velocities](#31-velocities)
+  - [3.2 Accelerations](#41-accelerations)
 - [5. Bresse Circles](#5-bresse-circles)
   - [5.1 Geometric Approach](#51-geometric-approach)
   - [5.2 Kinematic Approach](#52-kinematic-approach)
@@ -30,9 +31,7 @@
 
 ### Abstract
 
-This paper investigates the dragging behavior of vehicles using planar rigid-body kinematics. In this context, a kinematic analysis of the single-track model of a vehicle results in a numerical method based on the motion study of a planar four-bar mechanism.  
-The driving behavior reproduces the slip-free (slow) motion with a steered front-wheel and a fixed rear-wheel. The generated trajectories are compared to the analytical tractrix in terms of an error analysis.  
-The results are used to develop an interactive web application, which allows to interactively guide vehicles or vehicle groups of different dimensions along an arbitrary track, for example to dimension the necessary driving paths.
+This paper investigates the dragging behavior of vehicles using planar rigid-body kinematics. In this context, a kinematic analysis of the single-track model of a vehicle results in a numerical method based on the motion study of a planar four-bar mechanism. The driving behavior reproduces the slip-free (slow) motion with a steered front-wheel and a fixed rear-wheel. The generated trajectories are compared to the analytical tractrix in terms of an error analysis. The results are used to develop an interactive web application, which allows to interactively guide vehicles or vehicle groups of different dimensions along an arbitrary track, for example to dimension the necessary driving paths.
 
 ## 1. Introduction
 
@@ -85,7 +84,9 @@ while using $\sin\gamma = \tilde{\bold e}{\bold u}$ and $\cos\gamma = {\bold e}{
 
 Please note, as drawbar length $b$ is always positive and angle $\gamma$ can get positive and negative, that means, that $r$ as well as $h$ might get a negative value together with $\gamma$ also.
 
-## 3. Velocities
+## 3. Kinematics
+
+### 3.1 Velocities
 
 We find the velocities by differentiating equation (1) with respect to time.
 
@@ -102,7 +103,7 @@ $$\omega = \frac{v}{b} \sin\gamma\,.$$  (7)
 Angular velocity is zero with $\gamma = 0$, when the vehicle performs a pure translation.
 
 
-## 4. Accelerations
+### 3.2 Accelerations
 
 Deriving velocities (5) with respect to time leads us to the accelerations.
 
